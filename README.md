@@ -1,65 +1,74 @@
 # Background Removal with Deep Learning
 
-This repository shows the code to remove the background of the pictures using the [U2Net](https://arxiv.org/pdf/2005.09007.pdf) pre-trained model.
+> Dockerized fork of [renatoviolin/bg-remove-augment](https://github.com/renatoviolin/bg-remove-augment)
 
-The application has three simple functions:
+Remove image backgrounds using the [U2-Net](https://arxiv.org/pdf/2005.09007.pdf) pre-trained model.
 
-1. Remove the background, producing a transparent PNG file.
+## Features
 
-2. Change the background by another picture.
+- **Remove background** → transparent PNG
+- **Replace background** → composite with custom image
+- **Dataset augmentation** → batch combine with multiple backgrounds
+- **CPU & GPU support** → choose the right image for your hardware
 
-3. Combine the image and multiple backgrounds to augment the dataset.
+## Demo
 
-
-### Demos
 ![Demo](assets/demo1.gif)
-<hr>
 
 ![Demo](assets/demo2.gif)
 
-### Install
+## Quick Start
 
-1. Download the Dockerfile
-2. In the same directory run
-```
-docker build -t bg-remove .
-```
-4. Start the container via one of the following options
+### Docker Run
 
-*Via The Terminal:*
+**CPU:**
+```bash
+docker run -p 8000:8000 ghcr.io/r-oswald/bg-remove-augment:cpu
 ```
-docker run -p 8000:8000 bg-remove
+
+**GPU** (requires NVIDIA Container Toolkit):
+```bash
+docker run --gpus all -p 8000:8000 ghcr.io/r-oswald/bg-remove-augment:gpu
 ```
-*Via Docker Compose:*
+
+### Docker Compose
+
 ```yaml
 services:
   bg-remove:
-    container_name: bg-remove
-    image: bg-remove
-    restart: unless-stopped
+    image: ghcr.io/r-oswald/bg-remove-augment:cpu  # or :gpu
     ports:
       - 8000:8000
     volumes:
-      - ./input:/app/bg-remove-augment-docker/webapp/images-input # Optional if you want to mount the Input folder
-      - ./output:/app/bg-remove-augment-docker/webapp/images-output # Optional if you want to mount the Output folder
+      - ./input:/app/bg-remove-augment-docker/webapp/images-input
+      - ./output:/app/bg-remove-augment-docker/webapp/images-output
 ```
-It schould now be reachable via 
 
-| http://localhost:8000/ |  Front-end to perform background remove.
+### Build Locally
 
-| http://localhost:8000/augmentation |  Front-end to perform augment images.
+```bash
+docker build -f Dockerfile.cpu -t bg-remove:cpu .
+docker build -f Dockerfile.gpu -t bg-remove:gpu .
+```
 
+### Endpoints
 
-### References
-U2Net: [https://github.com/xuebinqin/U-2-Net](https://github.com/xuebinqin/U-2-Net)
+| URL | Description |
+|-----|-------------|
+| http://localhost:8000/ | Background removal |
+| http://localhost:8000/augmentation | Dataset augmentation |
 
+## References
 
-### BibTeX
-    @InProceedings{Qin_2020_PR,
-        title = {U2-Net: Going Deeper with Nested U-Structure for Salient Object Detection},
-        author = {Qin, Xuebin and Zhang, Zichen and Huang, Chenyang and Dehghan, Masood and Zaiane, Osmar and Jagersand, Martin},
-        journal = {Pattern Recognition},
-        volume = {106},
-        pages = {107404},
-        year = {2020}
+- U2-Net: [github.com/xuebinqin/U-2-Net](https://github.com/xuebinqin/U-2-Net)
+
+```bibtex
+@article{Qin_2020_PR,
+  title   = {U2-Net: Going Deeper with Nested U-Structure for Salient Object Detection},
+  author  = {Qin, Xuebin and Zhang, Zichen and Huang, Chenyang and Dehghan, Masood and Zaiane, Osmar and Jagersand, Martin},
+  journal = {Pattern Recognition},
+  volume  = {106},
+  pages   = {107404},
+  year    = {2020}
 }
+```
